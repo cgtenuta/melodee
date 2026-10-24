@@ -2044,7 +2044,7 @@ function makeMockDevice(opt = {}) {
     E("MIDI", ["USB", "TRS"], 0), E("DRUM", ["OFF", ...Array.from({ length: 16 }, (_, i) => String(i + 1))], 10), E("ROUT", ["CH1-4", "SEL", "CH5-8", "CH9-12", "CH13-16"], 0), D("CPU", F.INT, 0, 0, 0),
     D("SLOT", F.INT, 1, 5, 1), E("BOOT", ["OFF", "A", "B", "C", "D"], 0), E("LOAD", NGO, 0), E("SAVE", NGO, 0),
     E("ENG", ["-", "-", "-", "SID", "-", "-", "-", "-",
-      "-", "-", "DRUM", "-", "FM6", "-", "-", "CZ-1", "-", "-", "-", "PROPHET"], 0), D("A4", F.INT, 400, 480, 440, null, "Hz"),
+      "-", "-", "DRUM", "-", "FM6", "-", "-", "CZ-1", "-", "-", "-", "PROPHET", "-", "VA"], 0), D("A4", F.INT, 400, 480, 440, null, "Hz"),
     E("CLRSQ", NGO, 0), E("INIT", NGO, 0),
     ...Array.from({length:3},()=>D("",F.INT,0,127,0)),
   ];
@@ -2119,7 +2119,18 @@ function makeMockDevice(opt = {}) {
   ];
   ENG.push(...Array.from({length:3},()=>({name:"-",titles:["-","-"],edit:Array(8).fill(NONE),presets:[]})),
     {name:"PROPHET",titles:["FILTER/TUNE","PW/MIX"],edit:[D("CUT",F.INT,-63,63,0),D("RES",F.INT,-63,63,0),D("TUNA",F.SEMI,-24,24,0),D("TUNB",F.SEMI,-24,24,0),D("PWA",F.INT,-63,63,0),D("PWB",F.INT,-63,63,0),D("MIXA",F.INT,-63,63,0),D("MIXB",F.INT,-63,63,0)],presets:[P("INIT PROPHET",Array(8).fill(0),[0,0,127,0],0),   // + Sequential's 200 v1.03 programs
-      ...P5_FACTORY.map((b)=>P(P5.name(b),Array(8).fill(0),[0,0,127,0],0))]});
+      ...P5_FACTORY.map((b)=>P(P5.name(b),Array(8).fill(0),[0,0,127,0],0))]},
+    {name:"-",titles:["-","-"],edit:Array(8).fill(NONE),presets:[]},
+    {name:"VA",titles:["OSC", "FILT"],edit:[E("MODEL",["JUNO", "UBXA", "JP80"],0),D("PW",1,0,127,64),D("SUB",1,0,127,0),D("FREQ",5,0,127,80),D("RES",1,0,127,20),D("HPF",1,0,127,0),D("CHOR",1,0,127,0),D("NOIS",1,0,127,0)],
+      presets:[P("J6 BRASS",[0, 40, 30, 70, 20, 10, 80, 0],[5, 60, 90, 40],0),
+        P("J6 PAD",[0, 70, 10, 55, 10, 0, 100, 5],[60, 70, 100, 80],0),
+        P("J6 BASS",[0, 20, 100, 45, 40, 15, 0, 0],[0, 50, 70, 20],1),
+        P("UB STRNG",[1, 30, 80, 80, 20, 5, 0, 0],[40, 60, 100, 60],0),
+        P("UB SWEEP",[1, 50, 64, 40, 60, 40, 30, 0],[10, 80, 80, 50],0),
+        P("UB BRASS",[1, 20, 100, 60, 30, 30, 0, 0],[8, 60, 90, 30],0),
+        P("JP SAW",[2, 80, 100, 100, 10, 0, 1, 0],[2, 60, 110, 40],0),
+        P("JP LEAD",[2, 50, 70, 90, 30, 20, 1, 0],[0, 50, 100, 30],1),
+        P("JP TRANC",[2, 100, 127, 70, 40, 30, 0, 0],[0, 30, 60, 20],0)]});
   const FM6_E = ENG.findIndex((e) => e.name === "FM6"), FM6_BANK = 0;
   /* the mock's demo sequences (the device powers on empty; it has no pattern library): absolute notes, 0 rest;
      flags 1 accent, 2 slide, 4 tie (holds the previous note). ACID, BEAT */
@@ -2809,7 +2820,7 @@ function aliasOf(names, i) { const k = names ? names.indexOf(names[i]) : -1; ret
    the engine numbers. engineOrder(names): the indices of names in that order, "-" (a reserved number) left out; a name
    the list does not know (another firmware) follows in index order */
 const ENGINE_ORDER = ["PROPHET", "ANALOG", "FM6", "DIGITAL", "PHASE", "CZ-1", "SID", "VOICE", "NOISE",
-  "DRUM"];
+  "VA", "DRUM"];
 function engineOrder(names) {
   const rank = (n) => { const k = ENGINE_ORDER.indexOf(n); return k < 0 ? ENGINE_ORDER.length : k; };
   return (names || []).map((n, i) => i).filter((i) => !["-","SAMPLE","GRAIN","SLICE","OBXF"].includes(names[i])&&!(names.includes("PROPHET")&&names[i]==="ANALOG"))

@@ -5290,6 +5290,11 @@ static int test_seq_keys(void)
         led_pos[i] = (uint8_t)((i % FM1_NCOL) << 3 | (1u + i / FM1_NCOL));
     song.rec = 4u;
     ui_leds();
+    for (i = 0; i < 200u && !plane_led(2, 14u + key_at(1, 2)); i++) {   /* (breathing: lit in part of its cycle, whenever the
+                                                                         * test's clock got here) */
+        fm1_ms += 16u;
+        ui_leds();
+    }
     bad += check("  the track keys lit: track 1 bright, 2 dim, 3 (armed) breathing, 4 dark",
                  key_light(14u + key_at(1, 0)) == 2u && plane_led(1, 14u + key_at(1, 1)) &&
                  plane_led(2, 14u + key_at(1, 2)) && !plane_led(1, 14u + key_at(1, 3)) && !key_light(14u + key_at(1, 3)));
