@@ -300,6 +300,7 @@ if core; then
     run "resident audio: call graph and flash/RAM ABI boundaries" python3 tests/audio_ram_test.py
     t "removed effects: old songs and motion, MIDI, physical input and dry output" no_effects_test -O1 $FW
     t "resident audio: four-track resource budget and removed buses" ram_audio_test -O2 $FW
+    t "KNOB MAP: any parameter on any encoder, per part; persistence; the sheet; FOUR SYNTHS" kmap_test $FW -- "$OUT/kmap_test"
     t "resident/cache undo: validated eight levels and bounded fallback" ui_resident_cache:ui_test -DMELODEE_RAM_AUDIO=1 -DMELODEE_CACHE_RAM=1 $FW
     t "resident audio: expanded voice budget and CPU1 fallback" ram_voice_budget_test -O2 $FW
     t "audio: calibrated reservations, release tails and overlapping hits" audio_admission_test -O2 $FW
@@ -430,6 +431,8 @@ if sound && [ $TABLES = 1 ]; then
         "$OUT/drum_test" build/drum_demo
     t "DRUM SID: one 6581 on one voice, frame programs, DIGI on \$D418, filter routing, levels" drum_sid_test -O2 $FW -- \
         "$OUT/drum_sid_test" build/sid_kit_demo
+    t "VA: pitch, cutoff, presets, stability, determinism, cost against the Prophet (JUNO / UBXA / JP80 models)" va_test \
+        -O2 $FW -- "$OUT/va_test"
     t "NOISE: colour slopes, key-tracked filter and clock, META period, DC, clipping, retrigger, cost, demos" noise_test \
         -DMELODEE_LEGACY_EXTRAS=1 -O2 $FW -- "$OUT/noise_test" build/noise_demo
     t "FM6: the DX7's algorithms, pitch, levels, envelopes, modulation; DC, clipping, macros, patches, voices, cost, demos" \

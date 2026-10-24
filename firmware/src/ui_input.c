@@ -1002,6 +1002,7 @@ static void native_motion(const uint8_t *old)
     if (!designer_on() && !momentary.active && motion_native_edited(TSEL, old))
         motion_unplayed();
 }
+#include "kmap.c"                                       /* KNOB MAP: any parameter on any encoder (per part) */
 static void edit_param(uint32_t slot, int32_t steps)
 {
     int16_t *vp;
@@ -2450,6 +2451,8 @@ static void ui_input(void)
         seq_midi_events(0);                             /* (MIDI enters steps on SEQ > STEP only) */
     }
 
+    if (!knob_layer && !pop.on && !ui.menu && !ui.confirm && !name_on() && !ui.uboot && kmap_encoders())
+        step_edit_combo();                              /* (an assigned encoder: its parameter, on any page) */
     s = panel_enc(EN_PRESET);
     if (s) step_edit_combo();
     if (s && !ui.home && cur_page()->graph == GR_SCALE_PICKER) {
